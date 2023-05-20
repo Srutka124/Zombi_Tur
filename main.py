@@ -26,10 +26,15 @@ class Sprite(sprite.Sprite):
 class Player(Sprite):
     def move(self):
         keys = key.get_pressed()
-        if keys[K_LEFT]:
-            self.rect.x = self.rect.x - self.speed
-        if keys[K_RIGHT]:
-            self.rect.x = self.rect.x + self.speed
+        if keys[K_a]:
+            self.rect.x = 50 
+        if keys[K_s]:
+            self.rect.x = 150
+        if keys[K_d]:
+            self.rect.x = 300
+        if keys[K_f]:
+            self.rect.x = 450
+
 
     def fire(self):
         bullet = Bulet(15,20,self.rect.centerx,self.rect.top,'bullet.png',3 )
@@ -46,7 +51,7 @@ bullets = sprite.Group()
 
 
 
-
+player = Player (100,50,50 , 400,  "player.png" , 40)
 start = Button (250,150, 150,90,"start.png")
 Lord_exit = Button (250,250, 150,90,"стрілок.jpg")
 exit = Button (590,560, 100,40,"стрілок.jpg")
@@ -55,68 +60,57 @@ eses = Button (250,150, 150,90,"стрілок.jpg")
 normale = Button (250,250, 150,90,"стрілок.jpg")
 hurd = Button (250,350, 150,90,"стрілок.jpg")
 run1 = False
-run2 = False 
+run2 = True
+
 lifes = 3
 shoted = 0
 patrons = 0
+level = ""
 while game :
     for e in event.get() :
         if e.type == QUIT :
             game = False
         if e.type == KEYDOWN :
             if e.key == K_ESCAPE:
-                run1 = False
+                run2 = not run2 
                 
     if run2 == True:
-        window.fill((255,255,255))
-        if exit.draw(window):
-            game = False
-        
-        if pausa.draw(window):
-            game = False
-
-    elif run1 == True :
-        run2 = True
-
-    else:
         window.fill((255,0,0))
 
 
 
         if start.draw(window):
             run1 = True
+           
         if Lord_exit.draw(window):
             game = False
+        
+            
+
+    print (run1,run2)
+    if run1 == True :
+        run2 = False
         if eses.draw(window):
-            if pausa.draw(window):
-                game = False
-
-
-
-
-
-
-
+            level = "easy"
+            run1 = False
 
         if normale.draw(window):
-            if pausa.draw(window):
-                game = False
-
-
-
-
-
-
+            level = "normale"
+            run1 = False
 
         if hurd.draw(window):
-            if pausa.draw(window):
-                game = False
+            level = "hurd"
+            run1 = False
+    if run1 == False and run2 == False :
+        window.fill((255,0,0))
+        player.draw()
+
+        #if level == "easy" :
+
+            
 
 
-        window.blit(font.render("Lifes:"+str(lifes), True , (255,255,255) ),(100,20))
-        window.blit(font.render("kill: "+str(shoted), True , (255,255,255) ),(20,20))
-        window.blit(font.render("Lost: "+str(patrons), True , (255,255,255) ),(20,40))
-
+        
     clock.tick(60)
     display.update()
 
