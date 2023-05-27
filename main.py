@@ -1,11 +1,13 @@
 from pygame import *
 from button import Button
-
-window = display.set_mode((700,600))
+from time import sleep
+from random import *
+window = display.set_mode((700,700))
 clock = time.Clock()
-bkrnd_img = image.load('tur.png')
-bkrnd = transform.scale(bkrnd_img, (700,500))
+bkrnd_img = image.load('cona.png')
+bkrnd = transform.scale(bkrnd_img, (700,700))
 game = True
+record = 0
 
 class Sprite(sprite.Sprite):
     def __init__(self, h , w , x ,y , image_name, speed ):
@@ -27,13 +29,17 @@ class Player(Sprite):
     def move(self):
         keys = key.get_pressed()
         if keys[K_a]:
-            self.rect.x = 50 
+            self.rect.x = -70 
+            self.rect.y = 530
         if keys[K_s]:
-            self.rect.x = 150
+            self.rect.x = 100
+            self.rect.y = 530
         if keys[K_d]:
-            self.rect.x = 300
+            self.rect.x = 285
+            self.rect.y = 530
         if keys[K_f]:
-            self.rect.x = 450
+            self.rect.x = 455
+            self.rect.y = 530
 
 
     def fire(self):
@@ -45,25 +51,58 @@ class Bulet(Sprite):
         self.rect.y = self.rect.y - self.speed
         if self.rect.y <= 0 :
             self.kill()
-
+class Enemy (Sprite):
+    def update(self):
+        self.rect.y = self.rect.y + self.speed
+        global record
+        if self.rect.y >= 650 :
+            self.rect.y = 0
+            a = randint(1,4)
+            if a == 1 :
+                self.rect.x = -80
+            if a == 2 :
+                self.rect.x = 50
+            if a == 3 :
+                self.rect.x = 255
+            if a == 4 :
+                self.rect.x = 445
+            if record >=10:
+                self.speed = randint(1,3)
+            elif record >=20 :
+                self.speed = randint(2,6)
+            elif record >= 30 :
+              self.speed = randint(3,10)
+            elif record <= 30 :
+              self.speed = randint(5,10)
+        if  self.rect.y == 530:
+            lifes = lifes - 1
+    def kill()  :
+        
 bullets = sprite.Group()
 
+zoombi = sprite.Group()
+
+for i in range(1,6):
+    zoombi = Enemy(300,300,-70,50,'zoombi.png',50)
 
 
+bg = transform.scale(image.load("cona.png"),(700,700))
 
-player = Player (100,50,50 , 400,  "player.png" , 40)
-start = Button (250,150, 150,90,"start.png")
-Lord_exit = Button (250,250, 150,90,"стрілок.jpg")
-exit = Button (590,560, 100,40,"стрілок.jpg")
+player = Player (300,300,400 , 530,  "player.png" , 40)
+start = Button (250,150, 200,150,"start.png")
+Lord_exit = Button (250,350, 200,150,"start.png")
+exit = Button (590,560, 100,40,"start.png")
 pausa = Button (590,0, 100,40,"stop.png")
-eses = Button (250,150, 150,90,"стрілок.jpg")
-normale = Button (250,250, 150,90,"стрілок.jpg")
-hurd = Button (250,350, 150,90,"стрілок.jpg")
+easy = Button (0,300, 150,90,"start.png")
+normale = Button (250,300, 150,90,"start.png")
+hurd = Button (550,300, 150,90,"start.png")
 run1 = False
 run2 = True
-
+mixer.init()
+mixer.music.load("musik.mp3")
+mixer.music.play()
 lifes = 3
-shoted = 0
+record = 0
 patrons = 0
 level = ""
 while game :
@@ -72,7 +111,11 @@ while game :
             game = False
         if e.type == KEYDOWN :
             if e.key == K_ESCAPE:
-                run2 = not run2 
+                run2 = not run2
+
+        elif e.type == KEYDOWN:
+            if e.key == K_SPACE :
+                player.fire() 
                 
     if run2 == True:
         window.fill((255,0,0))
@@ -85,12 +128,10 @@ while game :
         if Lord_exit.draw(window):
             game = False
         
-            
-
-    print (run1,run2)
     if run1 == True :
+        window.fill((255,0,0))
         run2 = False
-        if eses.draw(window):
+        if easy.draw(window):
             level = "easy"
             run1 = False
 
@@ -102,15 +143,49 @@ while game :
             level = "hurd"
             run1 = False
     if run1 == False and run2 == False :
-        window.fill((255,0,0))
+        window.blit(bg,(0,0))
         player.draw()
+        player.move()
+        zoombi.update()
+        zoombi.draw()
+        bullets.draw(window)
+        bullets.update()
 
-        #if level == "easy" :
+        if level == "easy":
+            lifes = 5
+
+
+
+        
+        if lifes == 0:
+            game = True
+        
+        if  lifes == 2 :
+            color = (0,255,0)
+        elif lifes == 1 :
+            color = (255,255,0)
+        else:
+            color = (255,0,0)
+
+
+        text = font.player(str(lifes), True , color)
+    else :
+        finish = False
+        shoted = 0 
+        lpost = 0 
+        lifes = 3
+        for b in bullets :
+            b.kill()
+ #       for m in zoombi :
+ #           m.kill()
+        for i in range(1,6):
+            zoombi = Enemy(50,50,-70,50,'zoombi.png',50)
+
 
             
 
 
-        
+
     clock.tick(60)
     display.update()
 
