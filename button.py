@@ -23,14 +23,14 @@ class Button(sprite.Sprite):
 
 
 
-#class Recht ():
- #   def __init__(self , x,y ,w ,h , imagename ):
-#        self.image = transform.scale(image.load(imagename),(w,h))
-#        self.rect = self.image.get_rect()
-#        self.rect.x = x
-#        self.rect.y = y
-#        def draw (self):
-#            window.blit(self.image , (self.rect.x, self.rect.y))
+class Recht (sprite.Sprite):
+    def __init__(self , x,y ,w ,h , imagename ):
+        self.image = transform.scale(image.load(imagename),(w,h))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+    def draw (self ,window):
+        window.blit(self.image , (self.rect.x, self.rect.y))
 
 
 
