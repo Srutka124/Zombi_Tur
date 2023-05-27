@@ -67,16 +67,20 @@ class Enemy (Sprite):
             if a == 4 :
                 self.rect.x = 445
             if record >=10:
-                self.speed = randint(1,3)
+                self.speed = randint(2,3)
+                record = record +  1
             elif record >=20 :
                 self.speed = randint(2,6)
+                record = record + 1
             elif record >= 30 :
               self.speed = randint(3,10)
+              record = record + 1
             elif record <= 30 :
               self.speed = randint(5,10)
-        if  self.rect.y == 530:
-            lifes = lifes - 1
-    def kill()  :
+              record = record + 1
+        #if  self.rect.y == 530:
+        #    lifes = lifes - 1
+         
         
 bullets = sprite.Group()
 
@@ -85,22 +89,24 @@ zoombi = sprite.Group()
 for i in range(1,6):
     zoombi = Enemy(300,300,-70,50,'zoombi.png',50)
 
-
 bg = transform.scale(image.load("cona.png"),(700,700))
 
 player = Player (300,300,400 , 530,  "player.png" , 40)
 start = Button (250,150, 200,150,"start.png")
-Lord_exit = Button (250,350, 200,150,"start.png")
+Lord_exit = Button (250,350, 200,150,"stop.png")
 exit = Button (590,560, 100,40,"start.png")
 pausa = Button (590,0, 100,40,"stop.png")
-easy = Button (0,300, 150,90,"start.png")
-normale = Button (250,300, 150,90,"start.png")
-hurd = Button (550,300, 150,90,"start.png")
+easy = Button (450,200, 150,150,"easy2.png")
+normale = Button (-260,200, 500,350,"normal.png")
+hurd = Button (-260,350, 500,350,"hard.png")
 run1 = False
 run2 = True
+
 mixer.init()
 mixer.music.load("musik.mp3")
 mixer.music.play()
+
+
 lifes = 3
 record = 0
 patrons = 0
@@ -150,37 +156,22 @@ while game :
         zoombi.draw()
         bullets.draw(window)
         bullets.update()
+        mixer.init()
+        mixer.music.load("musik.mp3")
+        mixer.music.play()
+        
 
-        if level == "easy":
-            lifes = 5
+        #if level == "easy":
+        #    lifes = 5
+        #    patrons = 15
+
+
+
+
 
 
 
         
-        if lifes == 0:
-            game = True
-        
-        if  lifes == 2 :
-            color = (0,255,0)
-        elif lifes == 1 :
-            color = (255,255,0)
-        else:
-            color = (255,0,0)
-
-
-        text = font.player(str(lifes), True , color)
-    else :
-        finish = False
-        shoted = 0 
-        lpost = 0 
-        lifes = 3
-        for b in bullets :
-            b.kill()
- #       for m in zoombi :
- #           m.kill()
-        for i in range(1,6):
-            zoombi = Enemy(50,50,-70,50,'zoombi.png',50)
-
 
             
 
