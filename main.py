@@ -49,9 +49,7 @@ class Player(Sprite):
 
 
     def fire(self):
-        bullet = Bulet(15,20,self.rect.centerx,self.rect.top,'bullet.png',3 )
-        bullets.add(bullet)
-        bullet = Bulet(50,40,self.rect.centerx,self.rect.top,'bullet.png',6 )
+        bullet = Bulet(50,50,self.rect.centerx,self.rect.top,'bullet.png',3 )
         keys = key.get_pressed()
 
         if mouse.get_pressed()[0]==1:
@@ -65,7 +63,7 @@ class Bulet(Sprite):
         self.rect.y = self.rect.y - self.speed
         if self.rect.y <= 0 :
             self.kill()
-        if self.rect.y <= 500 :
+        if self.rect.y <= 10 :
             self.kill()
 class Bomb(Sprite):
     def update(self):
@@ -130,9 +128,9 @@ start = Button (250,150, 200,150,"start.png")
 Lord_exit = Button (250,350, 200,150,"stop.png")
 exit = Button (590,560, 100,40,"start.png")
 pausa = Button (590,0, 100,40,"stop.png")
-easy = Button (450,200, 150,150,"easy2.png")
-normale = Button (-260,200, 500,350,"normal.png")
-hurd = Button (-260,350, 500,350,"hard.png")
+easy = Button (100,200, 150,90,"easys.png")
+normale = Button (450,270, 150,90,"normal.png")
+hurd = Button (100,350, 150,90,"hard.png")
 run1 = False
 run2 = True
 mixer.init()
@@ -217,6 +215,7 @@ while game :
                     patrons += 150
                 elif gold == 0 :
                     ran2 = True
+        #if zoombi.rect.y = 
 
 
 
