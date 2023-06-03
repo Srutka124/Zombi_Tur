@@ -9,6 +9,8 @@ bkrnd = transform.scale(bkrnd_img, (700,700))
 game = True
 bkrnd_wert = image.load('fon.jpg')
 bkrnd_wer = transform.scale(bkrnd_wert, (700,700))
+bkrnd_Mony = image.load('Mony.png')
+#bkrnd_Mon = transform.scale(bkrnd_Mony, (50,50))
 record = 0
 
 class Sprite(sprite.Sprite):
@@ -25,6 +27,7 @@ class Sprite(sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.speed = speed
+        self._pressed = False
     def draw (self):
         window.blit(self.image , (self.rect.x, self.rect.y))
     def killed(self):
@@ -49,13 +52,17 @@ class Player(Sprite):
 
 
     def fire(self):
-        bullet = Bulet(50,50,self.rect.centerx,self.rect.top,'bullet.png',3 )
+        bullet = Bulet(50,50,self.rect.centerx,self.rect.top,'bullet.png',7 )
         keys = key.get_pressed()
-
-        if mouse.get_pressed()[0]==1:
+        
+        if mouse.get_pressed()[0]==1 and self._pressed==False:
             global patrons
-            patrons
+            patrons = patrons - 1
             bullets.add(bullet)
+            self._pressed =True
+
+        if mouse.get_pressed()[0]==0:
+            self._pressed = False
 
 
 class Bulet(Sprite):
@@ -71,8 +78,10 @@ class Bomb(Sprite):
 class Enemy (Sprite):
     def update(self):
         self.rect.y = self.rect.y + self.speed
+        global lifes
         global record
         if self.rect.y >= 650 :
+            lifes -= 1
             self.rect.y = 0
             a = randint(1,4)
             if a == 1 :
@@ -97,15 +106,13 @@ class Enemy (Sprite):
             elif record <= 30 :
               self.speed = randint(5,10)
               record = record + 1
+        
+       
         #if  self.rect.y == 530:
         #    lifes = lifes - 1
         #def cill() :
 
-def zoombi_kill():
-    for i in zoombis:
-            for j in bullets:
-                if i.rect.colliderect(j.rect):
-                    Ko = False
+
 
 
 
@@ -114,13 +121,15 @@ def zoombi_kill():
 
 bullets = sprite.Group()
 
-zoombi = sprite.Group()
+
 zoombis = sprite.Group()
 
 for i in range(1,6):
     zoombi = Enemy(100,50,-70,50,'zoombi.png',50)
     zoombis.add(zoombi)
-
+bh = transform.scale(image.load("Herd.png"),(50,50))
+bb = transform.scale(image.load("bullet.png"),(50,50))
+bm = transform.scale(image.load("Mony.png"),(50,50))
 bg = transform.scale(image.load("cona.png"),(700,700))
 bt = transform.scale(image.load("fon.jpg"),(700,700))
 player = Player (300,300,400 , 530,  "player.png" , 40)
@@ -136,9 +145,9 @@ run2 = True
 mixer.init()
 mixer.music.load("musik.mp3")
 mixer.music.play()
-lifes = 3
+lifes = 10
 record = 0
-patrons = 0
+patrons = 150
 gold = 0
 
 level = ""
@@ -169,36 +178,55 @@ while game :
         if easy.draw(window):
             level = "easy"
             run1 = False
+            lifes = 10
+            patrons = 150
+            gold = 0
         if normale.draw(window):
             level = "normale"
             run1 = False
+            lifes = 7
+            patrons = 125
+            gold =  0
         if hurd.draw(window):
             level = "hurd"
             run1 = False
+            lifes = 5
+            patrons = 100
+            gold = 0
 
     if run1 == False and run2 == False :
         window.blit(bg,(0,0))
         player.draw()
         player.move()
-        zoombi.update()
-        zoombi.draw()
+        zoombis.update()
+        zoombis.draw(window)
         bullets.draw(window)
         bullets.update()
         mixer.init()
-        mixer.music.load("musik.mp3")
-        mixer.music.play()
+        window.blit(bh,(20,0))
         player.fire()
-
-        text = font.render('Пропущено:'  + str(lifes),True, (255,255,255))
-        window.blit(text,(20,20))
-
+        text = font.render(''  + str(lifes),True, (255,255,255))
+        window.blit(text,(40,0))
 
 
-        for i in zoombis:
-            for j in bullets:
-                if i.rect.colliderect(j.rect):
-                    i.kill()
-                    #i.rect.x = -50
+        window.blit(bb,(20,50))
+        text = font.render(''  + str(patrons),True, (255,255,255))
+        window.blit(text,(40,50))
+
+
+        window.blit(bm,(20,100))
+        text = font.render(''  + str(gold),True, (255,255,255))
+        window.blit(text,(40,100))
+
+        text = font.render('Живу'  + str(record),True, (255,255,255))
+        window.blit(text,(20,150))
+
+
+
+        for i in sprite.groupcollide(zoombis,bullets,True,True):
+            zoombi = Enemy(100,50,-70,50,'zoombi.png',50)
+            zoombis.add(zoombi)
+            gold = gold + 1 
 
 
         #if level == "easy":
@@ -206,16 +234,21 @@ while game :
         #    patrons = 15
 
         if level == "easy":
-            lifes = 5
-            patrons = 150
-            gold = 0
+            
+
             if patrons == 0 :
                 if gold <= 1 :
                     gold = gold - 10 
                     patrons += 150
                 elif gold == 0 :
                     ran2 = True
-        #if zoombi.rect.y = 
+
+        if lifes == 0 :
+            
+            run2 = True
+    
+
+    
 
 
 
@@ -225,7 +258,7 @@ while game :
 
 
         
-            
+    record += 1       
     clock.tick(60)
     display.update()
 
