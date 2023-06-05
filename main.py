@@ -64,7 +64,9 @@ class Player(Sprite):
         if mouse.get_pressed()[0]==0:
             self._pressed = False
 
-
+bf1 = transform.scale(image.load("fire_1.png"),(50,50))
+bf2 = transform.scale(image.load("fire_2.png"),(50,50))
+bf3 = transform.scale(image.load("fire_3.png"),(50,50))
 class Bulet(Sprite):
     def update(self):
         self.rect.y = self.rect.y - self.speed
@@ -72,9 +74,35 @@ class Bulet(Sprite):
             self.kill()
         if self.rect.y <= 10 :
             self.kill()
-class Bomb(Sprite):
+
+class Bomb(sprite.Sprite):
+    def __init__ (self , x ,y , radius , image_list):
+        super().__init__()
+        self.image = image_list[0]
+        self.rect = self.image.get_rect()
+        self.frame = len(image_list) - 1 
+        self.image_list = image_list
+        self.rect.x = x
+        self.rect.y = y
+        self.count = 5 
+        self.time = 10
     def update(self):
-        self.kill()   
+        if self.count == 0:
+            self.count = 5
+            self.image = self.image_list[self.frame]
+            self.frame -= 1 
+            
+            if self.frame < 0 :
+                self.frame = len(self.image_list) - 1 
+            
+        else : 
+            self.count -= 1 
+        window.blit(self.image , (self.rect.x ,self.rect.y))
+        if self.time == 0 :
+            self.kill()
+        else : 
+            self.time -= 1
+
 class Enemy (Sprite):
     def update(self):
         self.rect.y = self.rect.y + self.speed
@@ -140,6 +168,7 @@ pausa = Button (590,0, 100,40,"stop.png")
 easy = Button (100,200, 150,90,"easys.png")
 normale = Button (450,270, 150,90,"normal.png")
 hurd = Button (100,350, 150,90,"hard.png")
+bomb = Bomb (400,500 , 100 , [bf1, bf2,bf3])
 run1 = False
 run2 = True
 mixer.init()
@@ -202,11 +231,13 @@ while game :
         zoombis.draw(window)
         bullets.draw(window)
         bullets.update()
+        bomb.update()
         mixer.init()
         window.blit(bh,(20,0))
         player.fire()
         text = font.render(''  + str(lifes),True, (255,255,255))
         window.blit(text,(40,0))
+
 
 
         window.blit(bb,(20,50))
