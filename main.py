@@ -16,7 +16,7 @@ record = 0
 class Sprite(sprite.Sprite):
     def __init__(self, h , w , x ,y , image_name, speed ):
         super().__init__()
-        sprite.Sprite.__init__(self)
+        
         self.image = image.load(image_name)
         self.image = transform.scale(self.image, (w , h))
         self.h = h
@@ -63,6 +63,14 @@ class Player(Sprite):
 
         if mouse.get_pressed()[0]==0:
             self._pressed = False
+    def bombe (self):
+        bomb = Bomb (400,500 , 300 , [bf1, bf2,bf3])
+        bombs.add(bomb)
+
+
+        
+
+
 
 bf1 = transform.scale(image.load("fire_1.png"),(50,50))
 bf2 = transform.scale(image.load("fire_2.png"),(50,50))
@@ -102,6 +110,18 @@ class Bomb(sprite.Sprite):
             self.kill()
         else : 
             self.time -= 1
+            window.blit(self.image , (self.rect.x ,self.rect.y))
+    def mowe (self):
+        keys = key.get_pressed()
+        if keys[K_1]: 
+            self.rect.y = 530
+        if keys[K_2]:
+            self.rect.y = 200
+        if keys[K_3]:
+            self.rect.y = 100
+        if keys[K_4]:
+            self.rect.y = 300
+        
 
 class Enemy (Sprite):
     def update(self):
@@ -111,29 +131,30 @@ class Enemy (Sprite):
         if self.rect.y >= 650 :
             lifes -= 1
             self.rect.y = 0
-            a = randint(1,4)
-            if a == 1 :
-                self.rect.x = -80
-                self.rect.x = -70
+        a = randint(1,4)
+        if a == 1 :
+            self.rect.x = 650
 
-            if a == 2 :
-                self.rect.x = 50
-            if a == 3 :
-                self.rect.x = 255
-            if a == 4 :
-                self.rect.x = 445
-            if record >=10:
-                self.speed = randint(2,3)
-                record = record +  1
-            elif record >=20 :
-                self.speed = randint(2,6)
-                record = record + 1
-            elif record >= 30 :
-              self.speed = randint(3,10)
-              record = record + 1
-            elif record <= 30 :
-              self.speed = randint(5,10)
-              record = record + 1
+        elif a == 2 :
+            self.rect.x = 100
+        elif a == 3 :
+            self.rect.x = 255
+        elif a == 4 :
+            self.rect.x = 445
+        if record >= 10000:
+            self.speed = randint(2,3)
+            record = record +  1
+        elif record >=20000 :
+            self.speed = randint(2,6)
+            record = record + 1
+        elif record >= 300000 :
+            self.speed = randint(3,10)
+            record = record + 1
+        elif record <= 300000 :
+            self.speed = randint(5,10)
+            record = record + 1 
+    def recet(self):
+        self.rect.y = -100 
         
        
         #if  self.rect.y == 530:
@@ -145,7 +166,7 @@ class Enemy (Sprite):
 
 
 
-
+bombs = sprite.Group()
 
 bullets = sprite.Group()
 
@@ -153,8 +174,14 @@ bullets = sprite.Group()
 zoombis = sprite.Group()
 
 for i in range(1,6):
-    zoombi = Enemy(100,50,-70,50,'zoombi.png',50)
+    zoombi = Enemy(100,50,100,50,'zoombi.png',1)
     zoombis.add(zoombi)
+    #zoombi = Enemy(100,255,100,100,'zoombi.png',1)
+    #zoombis.add(zoombi)
+    #zoombi = Enemy(100,445,100,100,'zoombi.png',1)
+    #zoombis.add(zoombi)
+    #zoombi = Enemy(100,650,100,100,'zoombi.png',1)
+    #zoombis.add(zoombi)
 bh = transform.scale(image.load("Herd.png"),(50,50))
 bb = transform.scale(image.load("bullet.png"),(50,50))
 bm = transform.scale(image.load("Mony.png"),(50,50))
@@ -168,7 +195,7 @@ pausa = Button (590,0, 100,40,"stop.png")
 easy = Button (100,200, 150,90,"easys.png")
 normale = Button (450,270, 150,90,"normal.png")
 hurd = Button (100,350, 150,90,"hard.png")
-bomb = Bomb (400,500 , 100 , [bf1, bf2,bf3])
+#bomb = Bomb (400,500 , 100 , [bf1, bf2,bf3])
 run1 = False
 run2 = True
 mixer.init()
@@ -178,7 +205,7 @@ lifes = 10
 record = 0
 patrons = 150
 gold = 0
-
+bom = 0
 level = ""
 font.init()
 font = font.SysFont('Arial',24)
@@ -195,6 +222,7 @@ while game :
                 
     if run2 == True:
         window.blit(bt,(0,0))
+        
         if start.draw(window):
             run1 = True
            
@@ -229,12 +257,18 @@ while game :
         player.move()
         zoombis.update()
         zoombis.draw(window)
+
+
+        
         bullets.draw(window)
         bullets.update()
-        bomb.update()
+        bombs.update()
+        bombs.mowe()
+
         mixer.init()
         window.blit(bh,(20,0))
         player.fire()
+        player.bombe()
         text = font.render(''  + str(lifes),True, (255,255,255))
         window.blit(text,(40,0))
 
@@ -255,9 +289,14 @@ while game :
 
 
         for i in sprite.groupcollide(zoombis,bullets,True,True):
-            zoombi = Enemy(100,50,-70,50,'zoombi.png',50)
+            zoombi = Enemy(100,50,50,50,'zoombi.png',1)
             zoombis.add(zoombi)
             gold = gold + 1 
+        for e in sprite.groupcollide(zoombis,bombs,True,True):
+            zoombi = Enemy(100,50,50,50,'zoombi.png',1)
+            zoombis.add(zoombi)
+            gold = gold + 1 
+        
 
 
         #if level == "easy":
@@ -268,13 +307,17 @@ while game :
             
 
             if patrons == 0 :
-                if gold <= 1 :
-                    gold = gold - 10 
+                if gold >= 100 :
+                    gold = gold - 100 
                     patrons += 150
-                elif gold == 0 :
+                elif gold <= 0 :
                     ran2 = True
+            
 
-        if lifes == 0 :
+        if lifes <= 0 :
+            for i in zoombis :
+                i.recet()
+                print()
             
             run2 = True
     
