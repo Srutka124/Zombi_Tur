@@ -229,6 +229,7 @@ while game :
     if run2 == True:
         window.blit(bt,(0,0))
         
+        
         if start.draw(window):
             run1 = True
            
@@ -293,26 +294,26 @@ while game :
         text = font.render(''  + str(gold),True, (255,255,255))
         window.blit(text,(40,100))
 
-        text = font.render('Живу'  + str(record),True, (255,255,255))
+        text = font.render('Живу:'  + str(record),True, (255,255,255))
         window.blit(text,(20,150))
 
 
         see = 2
         for i in sprite.groupcollide(zoombis,bullets,True,True):
             a = randint(1,8)
-            if a == 1   :
-                zoombi = Enemy(100,50,100,50,'zoombi.png',randint(1,4))
+            if a == 1 or a == 5  or a == 7   :
+                zoombi = Enemy(100,50,100,50,'zoombi.png',randint(1,5))
                 zoombis.add(zoombi)
-            if a == 2  :
-                zoombi = Enemy(100,50,255,100,'zoombi.png',randint(1,3))
+            if a == 2 or a == 6 or a == 8:
+                zoombi = Enemy(100,50,255,100,'zoombi.png',randint(1,5))
                 zoombis.add(zoombi)
-            if a == 3  :
-                zoombi = Enemy(100,50,445,100,'zoombi.png',randint(1,4))
+            if a == 3 or a == 5 :
+                zoombi = Enemy(100,50,445,100,'zoombi.png',randint(1,5))
                 zoombis.add(zoombi)
-            if a == 4 :
-                zoombi = Enemy(100,50,600,100,'zoombi.png',randint(1,3))
+            if a == 4  or a == 6:
+                zoombi = Enemy(100,50,600,100,'zoombi.png',randint(1,5))
                 zoombis.add(zoombi)
-            see -= 1 
+            #see -= 1 
             gold += 2
         #for e in sprite.groupcollide(zoombis,bombs,True,True):
             #e.kill()
@@ -350,10 +351,15 @@ while game :
             
 
         if lifes <= 0 :
+            l = len(zoombis)
             for i in zoombis :
                 i.recet()
+                if l > 2:
+                    i.kill()
+                l -= 1
                 print()
-            
+                
+          
             run2 = True
         
 
